@@ -1,9 +1,15 @@
 package com.coursework.modforge.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "mods")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class Mod {
 
     @Id
