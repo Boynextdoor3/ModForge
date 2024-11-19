@@ -7,10 +7,15 @@ import com.coursework.modforge.exception.ModNotFoundException;
 import com.coursework.modforge.mapper.ModMapper;
 import com.coursework.modforge.repository.ModRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import jakarta.persistence.criteria.Predicate;
+import java.util.ArrayList;
 import java.util.List;
+
 
 @Service
 @Transactional
@@ -24,11 +29,22 @@ public class ModService {
         return modMapper.toDto(mod);
     }
 
-    public List<ModDto> getAll(){
-        List<Mod> mods = modRepository.findAll();
-        return  mods.stream()
-                .map(modMapper::toDto)
-                .toList();
+    public Page<ModDto> getAll(Long typeId, Long userId, Pageable pageable) {
+        Specification<Mod> specification = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (typeId != null) {
+                predicates.add(criteriaBuilder.equal(root.join("type").get("id"), typeId));
+            }
+            if (userId != null) {
+                predicates.add(criteriaBuilder.equal(root.join("modCreator").get("id"), userId));
+            }
+
+            return predicates.isEmpty() ? null : criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+
+        Page<Mod> mods = modRepository.findAll(specification, pageable);
+        return mods.map(modMapper::toDto);
     }
 
     @Transactional

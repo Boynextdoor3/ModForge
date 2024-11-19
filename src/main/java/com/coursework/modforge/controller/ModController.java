@@ -5,6 +5,10 @@ import com.coursework.modforge.dto.ModDto;
 import com.coursework.modforge.service.ModService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +27,21 @@ public class ModController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ModDto>> getAllMods(){
-        return ResponseEntity.ok(modService.getAll());
+    public ResponseEntity<Page<ModDto>> getAllMods(
+            @RequestParam(required = false) Long typeId,
+            @RequestParam(required = false) Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "addedDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir) {
+
+        if (!List.of("title", "addedDate", "description").contains(sortBy)) {
+            throw new IllegalArgumentException("Invalid sortBy field: " + sortBy);
+        }
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
+        Page<ModDto> mods = modService.getAll(typeId, userId, pageable);
+        return ResponseEntity.ok(mods);
     }
 
     @PostMapping
