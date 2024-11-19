@@ -36,4 +36,17 @@ public class GameService {
     public GameDto create(GameCreationDto gameCreationDto){
         return gameMapper.toDto(gameRepository.save(gameMapper.toEntity(gameCreationDto)));
     }
+
+    @Transactional
+    public GameDto update(Long id, GameDto gameDto) {
+        Game game = gameRepository.findById(id).orElseThrow(() -> new GameNotFoundException("Game not found"));
+        gameMapper.partialUpdate(gameDto, game);
+        game.setTitle(gameDto.title());
+        return gameMapper.toDto(gameRepository.save(game));
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        gameRepository.deleteById(id);
+    }
 }

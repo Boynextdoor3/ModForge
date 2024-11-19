@@ -32,4 +32,15 @@ public class GameController {
     public ResponseEntity<GameDto> createGame(@Valid @RequestBody GameCreationDto gameCreationDto){
         return new ResponseEntity(gameService.create(gameCreationDto), HttpStatus.CREATED);
     }
+
+    @PutMapping("{id}")
+    public ResponseEntity<GameDto> updateGame(@PathVariable Long id, @RequestBody GameDto gameDto){
+        return new ResponseEntity(gameService.update(id, gameDto), HttpStatus.OK);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteGame(@PathVariable Long id){
+        gameService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

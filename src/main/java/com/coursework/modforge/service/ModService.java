@@ -35,4 +35,18 @@ public class ModService {
     public ModDto create(ModCreationDto modCreationDto){
         return modMapper.toDto(modRepository.save(modMapper.toEntity(modCreationDto)));
     }
+
+    @Transactional
+    public ModDto update(Long id,ModDto modDto){
+        Mod mod = modRepository.findById(id).orElseThrow(() -> new ModNotFoundException("Mod not found"));
+        modMapper.partialUpdate(modDto, mod);
+        mod.setTitle(modDto.title());
+        mod.setDescription(modDto.description());
+        return modMapper.toDto(modRepository.save(mod));
+    }
+
+    @Transactional
+    public void delete(Long id){
+        modRepository.deleteById(id);
+    }
 }

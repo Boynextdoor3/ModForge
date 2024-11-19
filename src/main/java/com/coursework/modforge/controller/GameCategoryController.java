@@ -32,4 +32,15 @@ public class GameCategoryController {
         return new ResponseEntity(gameCategoryService.create(gameCategoryCreationDto), HttpStatus.CREATED);
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity<GameCategoryDto> updateGameCategory(@PathVariable Long id, @RequestBody GameCategoryDto gameCategoryDto){
+        return new ResponseEntity(gameCategoryService.update(id, gameCategoryDto), HttpStatus.OK);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteGameCategory(@PathVariable Long id){
+        gameCategoryService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

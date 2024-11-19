@@ -31,4 +31,15 @@ public class ModController {
     public ResponseEntity<ModDto> createMod(@Valid @RequestBody ModCreationDto modCreationDto){
         return new ResponseEntity(modService.create(modCreationDto), HttpStatus.CREATED);
     }
+
+    @PutMapping("{id}")
+    public ResponseEntity<ModDto> updateMod(@PathVariable Long id, @RequestBody ModDto modDto){
+        return new ResponseEntity(modService.update(id, modDto), HttpStatus.OK);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteMod(@PathVariable Long id){
+        modService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

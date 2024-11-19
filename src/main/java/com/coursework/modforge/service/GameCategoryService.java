@@ -37,4 +37,17 @@ public class GameCategoryService {
         return gameCategoryMapper.toDto(gameCategoryRepository.save(gameCategoryMapper.toEntity(gameCategoryCreationDto)));
     }
 
+    @Transactional
+    public GameCategoryDto update(Long id, GameCategoryDto gameCategoryDto){
+        GameCategory gameCategory = gameCategoryRepository.findById(id).orElseThrow(() -> new GameCategoryNotFoundException("Category not found"));
+        gameCategoryMapper.partialUpdate(gameCategoryDto, gameCategory);
+        gameCategory.setName(gameCategoryDto.name());
+        return gameCategoryMapper.toDto(gameCategoryRepository.save(gameCategory));
+    }
+
+    @Transactional
+    public void delete(Long id){
+        gameCategoryRepository.deleteById(id);
+    }
+
 }

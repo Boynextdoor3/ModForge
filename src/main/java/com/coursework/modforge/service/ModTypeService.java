@@ -2,6 +2,7 @@ package com.coursework.modforge.service;
 
 import com.coursework.modforge.dto.ModTypeCreationDto;
 import com.coursework.modforge.dto.ModTypeDto;
+import com.coursework.modforge.entity.Mod;
 import com.coursework.modforge.entity.ModType;
 import com.coursework.modforge.exception.ModTypeNotFoundException;
 import com.coursework.modforge.mapper.ModTypeMapper;
@@ -34,5 +35,19 @@ public class ModTypeService {
     @Transactional
     public ModTypeDto create(ModTypeCreationDto modTypeCreationDto){
         return modTypeMapper.toDto(modTypeRepository.save(modTypeMapper.toEntity(modTypeCreationDto)));
+    }
+
+    @Transactional
+    public ModTypeDto update(Long id, ModTypeDto modTypeDto){
+        ModType modType = modTypeRepository.findById(id).orElseThrow(() -> new ModTypeNotFoundException("Type not found"));
+        modTypeMapper.partialUpdate(modTypeDto, modType);
+        modType.setName(modTypeDto.name());
+        return modTypeMapper.toDto(modTypeRepository.save(modType));
+    }
+
+    @Transactional
+    public void delete(Long id)
+    {
+        modTypeRepository.deleteById(id);
     }
 }

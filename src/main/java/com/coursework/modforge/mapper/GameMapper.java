@@ -5,7 +5,7 @@ import com.coursework.modforge.dto.GameDto;
 import com.coursework.modforge.entity.Game;
 import org.mapstruct.*;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = {GameCategoryMapper.class})
 public interface GameMapper {
     Game toEntity(GameDto gameDto);
 
@@ -15,4 +15,5 @@ public interface GameMapper {
     Game partialUpdate(GameDto gameDto, @MappingTarget Game game);
 
     Game toEntity(GameCreationDto gameCreationDto);
+
 }
