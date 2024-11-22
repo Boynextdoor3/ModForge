@@ -6,6 +6,10 @@ import com.coursework.modforge.dto.GameDto;
 import com.coursework.modforge.service.GameService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +28,20 @@ public class GameController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GameDto>> getAllGames(){
-        return  ResponseEntity.ok(gameService.getAll());
+    public ResponseEntity<Page<GameDto>> getAllGames(
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "title") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+
+        if (!sortBy.equals("title")) {
+            throw new IllegalArgumentException("Invalid sortBy field: " + sortBy);
+        }
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
+        Page<GameDto> games = gameService.getAll(categoryId, pageable);
+        return ResponseEntity.ok(games);
     }
 
     @PostMapping

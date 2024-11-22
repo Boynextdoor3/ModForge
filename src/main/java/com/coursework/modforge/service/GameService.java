@@ -6,10 +6,15 @@ import com.coursework.modforge.entity.Game;
 import com.coursework.modforge.exception.GameNotFoundException;
 import com.coursework.modforge.mapper.GameMapper;
 import com.coursework.modforge.repository.GameRepository;
+import jakarta.persistence.criteria.Predicate;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,11 +30,19 @@ public class GameService {
         return gameMapper.toDto(game);
     }
 
-    public List<GameDto> getAll(){
-        List<Game> games = gameRepository.findAll();
-        return  games.stream()
-                .map(gameMapper::toDto)
-                .toList();
+    public Page<GameDto> getAll(Long categoryId, Pageable pageable) {
+        Specification<Game> specification = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (categoryId != null) {
+                predicates.add(criteriaBuilder.equal(root.join("category").get("id"), categoryId));
+            }
+
+            return predicates.isEmpty() ? null : criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+
+        Page<Game> games = gameRepository.findAll(specification, pageable);
+        return games.map(gameMapper::toDto);
     }
 
     @Transactional
