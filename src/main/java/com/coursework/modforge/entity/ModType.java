@@ -16,7 +16,10 @@ public class ModType {
     @Id
     @GeneratedValue
     private Long id;
+
+    @Column(name = "name")
     private String name;
+
     @OneToMany(mappedBy = "type")
     private List<Mod> mods;
 }

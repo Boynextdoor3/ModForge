@@ -46,7 +46,7 @@ public class SecurityConfiguration {
                 }))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("api/games/**", "/api/mods/**", "api/games/category/**").permitAll()
+                        .requestMatchers("api/games/**", "/api/mods/**").permitAll()
 //                        .requestMatchers("/endpoint", "/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))

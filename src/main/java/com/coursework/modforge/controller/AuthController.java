@@ -26,8 +26,4 @@ public class AuthController {
         return authenticationService.signIn(request);
     }
 
-    @GetMapping("/get-admin")
-    public void getAdmin() {
-        userService.getAdmin();
-    }
 }

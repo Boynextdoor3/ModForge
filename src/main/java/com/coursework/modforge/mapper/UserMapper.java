@@ -1,6 +1,5 @@
 package com.coursework.modforge.mapper;
 
-import com.coursework.modforge.dto.UserCreationDto;
 import com.coursework.modforge.dto.UserDto;
 import com.coursework.modforge.entity.User;
 import org.mapstruct.*;
@@ -14,5 +13,4 @@ public interface UserMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     User partialUpdate(UserDto userDto, @MappingTarget User user);
 
-    User toEntity(UserCreationDto userCreationDto);
 }

@@ -18,25 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class UserService {
     private final UserRepository repository;
-    private final UserMapper userMapper;
-
-
-//    public UserDto getById(Long id){
-//        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
-//        return userMapper.toDto(user);
-//    }
-
-//    public List<UserDto> getAll(){
-//        List<User> users = userRepository.findAll();
-//        return  users.stream()
-//                .map(userMapper::toDto)
-//                .toList();
-//    }
-
-//    @Transactional
-//    public UserDto create(UserCreationDto userCreationDto){
-//        return userMapper.toDto(userRepository.save(userMapper.toEntity(userCreationDto)));
-//    }
 
     public User save(User user) {
         return repository.save(user);
@@ -69,11 +50,5 @@ public class UserService {
         return getByUsername(username);
     }
 
-    @Deprecated
-    public void getAdmin() {
-        var user = getCurrentUser();
-        user.setRole(Role.ADMIN);
-        save(user);
-    }
 
 }
