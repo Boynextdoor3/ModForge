@@ -3,7 +3,10 @@ package com.coursework.modforge.service;
 import com.coursework.modforge.dto.GameCreationDto;
 import com.coursework.modforge.dto.GameDto;
 import com.coursework.modforge.entity.Game;
+import com.coursework.modforge.exception.GameAlreadyExistException;
+import com.coursework.modforge.exception.GameCategoryAlreadyExistException;
 import com.coursework.modforge.exception.GameNotFoundException;
+import com.coursework.modforge.exception.ModTypeNotFoundException;
 import com.coursework.modforge.mapper.GameMapper;
 import com.coursework.modforge.repository.GameRepository;
 import jakarta.persistence.criteria.Predicate;
@@ -26,7 +29,8 @@ public class GameService {
     private final GameMapper gameMapper;
 
     public GameDto getById(Long id){
-        Game game = gameRepository.findById(id).orElseThrow(() -> new GameNotFoundException("Game not found"));
+        Game game = gameRepository.findById(id)
+                .orElseThrow(() -> new GameNotFoundException("Game not found"));
         return gameMapper.toDto(game);
     }
 
@@ -47,12 +51,19 @@ public class GameService {
 
     @Transactional
     public GameDto create(GameCreationDto gameCreationDto){
+        if (gameRepository.existsByTitle(gameCreationDto.title())) {
+            throw new GameAlreadyExistException("Game  with tittle '" + gameCreationDto.title() + "' already exists.");
+        }
         return gameMapper.toDto(gameRepository.save(gameMapper.toEntity(gameCreationDto)));
     }
 
     @Transactional
     public GameDto update(Long id, GameDto gameDto) {
-        Game game = gameRepository.findById(id).orElseThrow(() -> new GameNotFoundException("Game not found"));
+        Game game = gameRepository.findById(id)
+                .orElseThrow(() -> new GameNotFoundException("Game not found"));
+        if (gameRepository.existsByTitle(gameDto.title())) {
+            throw new GameAlreadyExistException("Game  with tittle '" + gameDto.title() + "' already exists.");
+        }
         gameMapper.partialUpdate(gameDto, game);
         game.setTitle(gameDto.title());
         return gameMapper.toDto(gameRepository.save(game));
@@ -60,6 +71,9 @@ public class GameService {
 
     @Transactional
     public void delete(Long id) {
+        if (!gameRepository.existsById(id)) {
+            throw new GameNotFoundException("Game with ID " + id + " not found");
+        }
         gameRepository.deleteById(id);
     }
 }

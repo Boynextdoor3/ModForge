@@ -50,7 +50,8 @@ public class ModTypeService {
 
     @Transactional
     public ModTypeDto update(Long id, ModTypeDto modTypeDto) {
-        ModType modType = modTypeRepository.findById(id).orElseThrow(() -> new ModTypeNotFoundException("Mod type with ID " + id + " not found"));
+        ModType modType = modTypeRepository.findById(id)
+                .orElseThrow(() -> new ModTypeNotFoundException("Mod type with ID " + id + " not found"));
         if (modTypeRepository.existsByName(modTypeDto.name())) {
             throw new ModTypeAlreadyExistsException("ModType with name '" + modTypeDto.name() + "' already exists.");
         }

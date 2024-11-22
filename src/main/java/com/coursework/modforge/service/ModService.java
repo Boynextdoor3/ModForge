@@ -3,6 +3,7 @@ package com.coursework.modforge.service;
 import com.coursework.modforge.dto.ModCreationDto;
 import com.coursework.modforge.dto.ModDto;
 import com.coursework.modforge.entity.Mod;
+import com.coursework.modforge.exception.ModAlreadyExistException;
 import com.coursework.modforge.exception.ModNotFoundException;
 import com.coursework.modforge.mapper.ModMapper;
 import com.coursework.modforge.repository.ModRepository;
@@ -25,7 +26,8 @@ public class ModService {
     private final ModMapper modMapper;
 
     public ModDto getById(Long id){
-        Mod mod = modRepository.findById(id).orElseThrow(() -> new ModNotFoundException("Mod not found"));
+        Mod mod = modRepository.findById(id)
+                .orElseThrow(() -> new ModNotFoundException("Mod not found"));
         return modMapper.toDto(mod);
     }
 
@@ -49,12 +51,19 @@ public class ModService {
 
     @Transactional
     public ModDto create(ModCreationDto modCreationDto){
+        if (modRepository.existsByTitle(modCreationDto.title())) {
+            throw new ModAlreadyExistException("Mod with title '" + modCreationDto.title() + "' already exists.");
+        }
         return modMapper.toDto(modRepository.save(modMapper.toEntity(modCreationDto)));
     }
 
     @Transactional
     public ModDto update(Long id,ModDto modDto){
-        Mod mod = modRepository.findById(id).orElseThrow(() -> new ModNotFoundException("Mod not found"));
+        Mod mod = modRepository.findById(id)
+                .orElseThrow(() -> new ModNotFoundException("Mod not found"));
+        if (modRepository.existsByTitle(modDto.title())) {
+            throw new ModAlreadyExistException("Mod with title '" + modDto.title() + "' already exists.");
+        }
         modMapper.partialUpdate(modDto, mod);
         mod.setTitle(modDto.title());
         mod.setDescription(modDto.description());
@@ -63,6 +72,9 @@ public class ModService {
 
     @Transactional
     public void delete(Long id){
+        if (!modRepository.existsById(id)) {
+            throw new ModNotFoundException("Mod with ID " + id + " not found");
+        }
         modRepository.deleteById(id);
     }
 }

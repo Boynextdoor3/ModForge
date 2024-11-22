@@ -2,6 +2,8 @@ package com.coursework.modforge.controller;
 
 import com.coursework.modforge.dto.ModCreationDto;
 import com.coursework.modforge.dto.ModDto;
+import com.coursework.modforge.exception.ModAlreadyExistException;
+import com.coursework.modforge.exception.ModNotFoundException;
 import com.coursework.modforge.service.ModService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -22,8 +24,12 @@ public class ModController {
     private final ModService modService;
 
     @GetMapping("{id}")
-    public ResponseEntity<ModDto> getModById(@PathVariable Long id){
-        return ResponseEntity.ok(modService.getById(id));
+    public ResponseEntity<ModDto> getModById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(modService.getById(id));
+        } catch (ModNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @GetMapping
@@ -45,18 +51,32 @@ public class ModController {
     }
 
     @PostMapping
-    public ResponseEntity<ModDto> createMod(@Valid @RequestBody ModCreationDto modCreationDto){
-        return new ResponseEntity(modService.create(modCreationDto), HttpStatus.CREATED);
+    public ResponseEntity<ModDto> createMod(@Valid @RequestBody ModCreationDto modCreationDto) {
+        try {
+            return new ResponseEntity(modService.create(modCreationDto), HttpStatus.CREATED);
+        } catch (ModAlreadyExistException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        }
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<ModDto> updateMod(@PathVariable Long id, @RequestBody ModDto modDto){
-        return new ResponseEntity(modService.update(id, modDto), HttpStatus.OK);
+    public ResponseEntity<ModDto> updateMod(@PathVariable Long id, @RequestBody ModDto modDto) {
+        try {
+            return new ResponseEntity(modService.update(id, modDto), HttpStatus.OK);
+        } catch (ModNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (ModAlreadyExistException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        }
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteMod(@PathVariable Long id){
-        modService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteMod(@PathVariable Long id) {
+        try {
+            modService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (ModNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 }

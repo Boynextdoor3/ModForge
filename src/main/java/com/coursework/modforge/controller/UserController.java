@@ -3,14 +3,10 @@ package com.coursework.modforge.controller;
 
 import com.coursework.modforge.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/api/users")
 @AllArgsConstructor
 public class UserController {
     private final UserService userService;
