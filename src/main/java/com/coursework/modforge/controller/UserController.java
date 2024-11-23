@@ -7,6 +7,7 @@ import com.coursework.modforge.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,6 +22,7 @@ public class UserController {
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id){
         try{
             userService.delete(id);
@@ -28,6 +30,12 @@ public class UserController {
         }catch (UserNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+
+    @GetMapping("/give_moder/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void giveModer(@PathVariable Long id){
+        userService.giveModer(id);
     }
 
 }

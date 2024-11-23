@@ -69,4 +69,12 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    @Transactional
+    public void giveModer(Long id){
+        User user = userRepository
+                .findById(id).orElseThrow(() -> new UserNotFoundException("User wit id " + id + "not found!"));
+        user.setRole(Role.ROLE_MODER);
+        save(user);
+    }
+
 }

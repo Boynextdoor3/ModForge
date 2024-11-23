@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -50,6 +51,7 @@ public class GameController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GameDto> createGame(@Valid @RequestBody GameCreationDto gameCreationDto) {
         try {
             return new ResponseEntity(gameService.create(gameCreationDto), HttpStatus.CREATED);
@@ -59,6 +61,7 @@ public class GameController {
     }
 
     @PutMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GameDto> updateGame(@PathVariable Long id, @RequestBody GameDto gameDto) {
         try {
             return new ResponseEntity(gameService.update(id, gameDto), HttpStatus.OK);
@@ -70,6 +73,7 @@ public class GameController {
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteGame(@PathVariable Long id) {
         try {
             gameService.delete(id);
