@@ -1,7 +1,7 @@
 package com.coursework.modforge.entity;
 
 public enum Role {
-    USER,
-    MODER,
-    ADMIN
+    ROLE_USER,
+    ROLE_MODER,
+    ROLE_ADMIN
 }

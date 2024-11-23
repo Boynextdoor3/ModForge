@@ -1,8 +1,12 @@
 package com.coursework.modforge.controller;
 
 
+import com.coursework.modforge.dto.UserDto;
+import com.coursework.modforge.exception.UserNotFoundException;
 import com.coursework.modforge.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -11,22 +15,19 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
-//    @GetMapping("{id}")
-//    public ResponseEntity<UserDto> getUserById(@PathVariable Long id){
-//        return ResponseEntity.ok(userService.getById(id));
-//    }
+    @GetMapping("{id}")
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id){
+        return ResponseEntity.ok(userService.getById(id));
+    }
 
-//    @GetMapping
-//    public ResponseEntity<List<UserDto>> getAllUsers(){
-//        return ResponseEntity.ok(userService.getAll());
-//    }
-
-//    @PostMapping
-//    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserCreationDto userCreationDto){
-//        return new ResponseEntity(userService.create(userCreationDto), HttpStatus.CREATED);
-//    }
-
-
-
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id){
+        try{
+            userService.delete(id);
+            return ResponseEntity.noContent().build();
+        }catch (UserNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 
 }
