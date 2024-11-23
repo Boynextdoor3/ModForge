@@ -22,7 +22,7 @@ public class UserController {
     }
 
     @DeleteMapping("{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id){
         try{
             userService.delete(id);
@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @GetMapping("/give_moder/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public void giveModer(@PathVariable Long id){
         userService.giveModer(id);
     }

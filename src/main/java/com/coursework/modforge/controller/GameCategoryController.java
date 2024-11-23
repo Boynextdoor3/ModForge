@@ -41,7 +41,7 @@ public class GameCategoryController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GameCategoryDto> createGameCategory(@Valid @RequestBody GameCategoryCreationDto gameCategoryCreationDto){
         try {
             return new ResponseEntity(gameCategoryService.create(gameCategoryCreationDto), HttpStatus.CREATED);
@@ -51,7 +51,7 @@ public class GameCategoryController {
     }
 
     @PutMapping("{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GameCategoryDto> updateGameCategory(@PathVariable Long id, @RequestBody GameCategoryDto gameCategoryDto){
         try {
             return new ResponseEntity(gameCategoryService.update(id, gameCategoryDto), HttpStatus.OK);
@@ -63,7 +63,7 @@ public class GameCategoryController {
     }
 
     @DeleteMapping("{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteGameCategory(@PathVariable Long id){
         try {
             gameCategoryService.delete(id);

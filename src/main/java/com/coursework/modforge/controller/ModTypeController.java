@@ -39,7 +39,7 @@ public class ModTypeController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ModTypeDto> createModType(@Valid @RequestBody ModTypeCreationDto modTypeCreationDto) {
         try {
             return new ResponseEntity<>(modTypeService.create(modTypeCreationDto), HttpStatus.CREATED);
@@ -49,7 +49,7 @@ public class ModTypeController {
     }
 
     @PutMapping("{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ModTypeDto> updateModType(@PathVariable Long id, @RequestBody ModTypeDto modTypeDto) {
         try {
             return new ResponseEntity<>(modTypeService.update(id, modTypeDto), HttpStatus.OK);
@@ -61,7 +61,7 @@ public class ModTypeController {
     }
 
     @DeleteMapping("{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteModType(@PathVariable Long id) {
         try {
             modTypeService.delete(id);
